@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -23,8 +24,15 @@ namespace ConsoleApp1
             var browser = new WebClient();
             var url = "https://api.lyrics.ovh/v1/" + band + "/" + song;
             var json = browser.DownloadString(url);
-            Console.WriteLine(json);
+            var lyrics = JsonConvert.DeserializeObject<LyricovhAnwser>(json);
+            Console.WriteLine(lyrics.lyrics);
            
         }
+    }
+
+    public class LyricovhAnwser
+    {
+        public string lyrics;
+        public string error;
     }
 }
