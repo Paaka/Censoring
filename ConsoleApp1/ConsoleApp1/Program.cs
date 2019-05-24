@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -13,7 +14,17 @@ namespace ConsoleApp1
         public static void Main(string[] args)
         {
             var songAnalysys = new songAnalysys(band:"kazik", song: "12 groszy");
+            var censor = new Censor();
             Console.ReadLine();
+        }
+    }
+
+    internal class Censor
+    {
+        public Censor()
+        {
+            var profanities = File.ReadAllText("profanities.txt");
+     
         }
     }
 
