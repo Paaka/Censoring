@@ -5,7 +5,7 @@ namespace ConsoleApp1
 {
     class Censor
     {
-        string[] badWords;
+        protected string[] badWords;
         public Censor()
         {
             var profanities = File.ReadAllText("profanities.txt");

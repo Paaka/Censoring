@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ConsoleApp1
@@ -13,9 +14,8 @@ namespace ConsoleApp1
         public static void Main(string[] args)
         {
             var eminemSwearStats = new SwearStats();
-            var tekst = "Programing is fucking awesome";
-            eminemSwearStats.AddSwearsFrom(song);
             var song = new song(band:"Eminem", songName: "Stan");
+            eminemSwearStats.AddSwearFrom(song);
             var censor = new Censor();
             Console.WriteLine(censor.Fix(song.lyrics));
             Console.ReadLine();
@@ -23,11 +23,15 @@ namespace ConsoleApp1
         }
     }
 
-    class SwearStats
+    class SwearStats:Censor
     {
-        public SwearStats()
+        Dictionary<string, int> swears = new Dictionary<string, int>();
+        public void AddSwearFrom(song song)
         {
-        
+            foreach(var word in badWords)
+            {
+                var occurances = song.CountOccurances(word);
+            }
         }
     }
 
@@ -49,7 +53,16 @@ namespace ConsoleApp1
             lyrics = lyricsData.lyrics;
            
         }
-    }
+
+        public int CountOccurances(string word)
+        {
+            var pattern = "\\b" + word + "\\b";
+            return Regex.Matches(lyrics, pattern, RegexOptions.IgnoreCase).Count;
+           
+        }
+
+        
+     }
 
     public class LyricovhAnwser
     {
