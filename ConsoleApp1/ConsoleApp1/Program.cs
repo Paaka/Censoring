@@ -1,11 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ConsoleApp1
@@ -14,58 +12,41 @@ namespace ConsoleApp1
     {
         public static void Main(string[] args)
         {
+            var eminemSwearStats = new SwearStats();
             var tekst = "Programing is fucking awesome";
-            var songAnalysys = new songAnalysys(band:"kazik", song: "12 groszy");
+            eminemSwearStats.AddSwearsFrom(song);
+            var song = new song(band:"Eminem", songName: "Stan");
             var censor = new Censor();
-            Console.WriteLine(censor.Fix(tekst));
+            Console.WriteLine(censor.Fix(song.lyrics));
             Console.ReadLine();
             
         }
     }
 
-     class Censor
+    class SwearStats
     {
-        string[] badWords;
-        public Censor()
+        public SwearStats()
         {
-            var profanities = File.ReadAllText("profanities.txt");
-            profanities = profanities.Replace("*", "");
-            profanities = profanities.Replace("(", "");
-            profanities = profanities.Replace(")", "");
-            profanities = profanities.Replace("\"", "");
-
-            badWords = profanities.Split(',');
-
-            
-        }
-
-        public string Fix(string tekst)
-        {
-            foreach (var word in badWords)
-            {
-                tekst = RepalaceBadWords(tekst, word);
-            }
-
-            return tekst;
-        }
-
-        private static string RepalaceBadWords(string tekst, string word)
-        {
-            var pattern = "\\b" + word + "\\b";
-             return Regex.Replace(tekst, pattern, "_____", RegexOptions.IgnoreCase);
+        
         }
     }
 
-    class songAnalysys
+    class song
     {
-        public songAnalysys(string band, string song)
+        public string title;
+        public string artist;
+        public string lyrics;
+        public song(string band, string songName)
         {
             var browser = new WebClient();
-            var url = "https://api.lyrics.ovh/v1/" + band + "/" + song;
+            var url = "https://api.lyrics.ovh/v1/" + band + "/" + songName;
             var json = browser.DownloadString(url);
-            var lyrics = JsonConvert.DeserializeObject<LyricovhAnwser>(json);
-            Console.WriteLine(lyrics.lyrics);
+            var lyricsData = JsonConvert.DeserializeObject<LyricovhAnwser>(json);
+            
 
+            title = songName;
+            artist = band;
+            lyrics = lyricsData.lyrics;
            
         }
     }
