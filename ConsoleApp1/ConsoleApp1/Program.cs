@@ -14,7 +14,7 @@ namespace ConsoleApp1
         public static void Main(string[] args)
         {
             var eminemSwearStats = new SwearStats();
-            var song = new song(band:"Eminem", songName: "Stan");
+            var song = new Song(band:"Eminem", songName: "stan");
             eminemSwearStats.AddSwearFrom(song);
             var censor = new Censor();
             Console.WriteLine(censor.Fix(song.lyrics));
@@ -26,7 +26,7 @@ namespace ConsoleApp1
     class SwearStats:Censor
     {
         Dictionary<string, int> swears = new Dictionary<string, int>();
-        public void AddSwearFrom(song song)
+        public void AddSwearFrom(Song song)
         {
             foreach(var word in badWords)
             {
@@ -35,12 +35,12 @@ namespace ConsoleApp1
         }
     }
 
-    class song
+    class Song
     {
         public string title;
         public string artist;
         public string lyrics;
-        public song(string band, string songName)
+        public Song(string band, string songName)
         {
             var browser = new WebClient();
             var url = "https://api.lyrics.ovh/v1/" + band + "/" + songName;
