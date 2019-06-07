@@ -13,17 +13,45 @@ namespace ConsoleApp1
     {
         public static void Main(string[] args)
         {
-            var eminemSwearStats = new SwearStats();
-            var song = new Song(band:"Eminem", songName: "stan");
-            eminemSwearStats.AddSwearFrom(song);
-            var censor = new Censor();
-            Console.WriteLine(censor.Fix(song.lyrics));
-            Console.ReadLine();
-            
+            var eminemSwearStats = new Rapper("Hollywood undead");
+            eminemSwearStats.AddSong("undead");
+
+            var twoPacStats = new Rapper("2pac");
+            twoPacStats.AddSong("changes");
+
+            var rappers = new List<Rapper>();
+            rappers.Add(eminemSwearStats);
+            rappers.Add(twoPacStats);
+
+            var unknownSong = new Song(band: "Hollywood undead", songName: "Christmas in Hollywood");
+
+            var tinder = new RapperTinder(rappers, unknownSong);
+            Console.ReadKey();
         }
     }
 
-    class SwearStats:Censor
+    internal class RapperTinder
+    {
+        List<Rapper> rappers;
+        Song unknownSong;
+
+        public RapperTinder(List<Rapper> rappers, Song unknownSong)
+        {
+            this.rappers = rappers;
+            this.unknownSong = unknownSong;
+
+            var songSwearStats = new SwearStats();
+            songSwearStats.AddSwearFrom(unknownSong);
+
+            foreach(var rapper in rappers)
+            {
+                var score = rapper.CompareWith(songSwearStats);
+                Console.WriteLine(rapper.name + ": " + score + " points");
+            }
+        }
+    }
+
+    public class SwearStats:Censor
     {
         Dictionary<string, int> swears = new Dictionary<string, int>();
         public void AddSwearFrom(Song song)
@@ -31,11 +59,43 @@ namespace ConsoleApp1
             foreach(var word in badWords)
             {
                 var occurances = song.CountOccurances(word);
+                if(occurances > 0)
+                {
+                    if (!swears.ContainsKey(word))
+                        swears.Add(word, 0);
+                    swears[word] += occurances;
+                }
+                
             }
+        }
+
+        public void ShowSummary()
+        {
+            foreach (var item in swears)
+            {
+                Console.WriteLine(item.Key + " " + item.Value);
+            }
+        }
+
+        public int CompareWith(SwearStats eminemSwearStats)
+        {
+            int score = 0;
+            foreach (var myWords in swears)
+            {
+                if (eminemSwearStats.swears.ContainsKey(myWords.Key))
+                {
+                    score++;
+                }
+                else
+                {
+                    score--;
+                }
+            }
+            return score;
         }
     }
 
-    class Song
+    public class Song
     {
         public string title;
         public string artist;
@@ -63,6 +123,22 @@ namespace ConsoleApp1
 
         
      }
+
+    public class Rapper : SwearStats
+    {
+        public string name;
+
+        public Rapper(string name)
+        {
+            this.name = name;
+        }
+
+        public void AddSong(string title)
+        {
+            var song = new Song(band: name, songName: title);
+            AddSwearFrom(song);
+        }
+    }
 
     public class LyricovhAnwser
     {

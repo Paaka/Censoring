@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace ConsoleApp1
 {
-    class Censor
+    public class Censor
     {
         protected string[] badWords;
         public Censor()
